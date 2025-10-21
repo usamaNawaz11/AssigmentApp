@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Dimensions, FlatList, Image, StyleSheet, Text, View } from 'react-native';
+import { Alert, Dimensions, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Images } from "../assets/NewImages/Index";
 import { TreeData } from "../constants/DummyData";
 
@@ -12,14 +12,17 @@ const Header_SectionB = () => {
   return (
      <View style={styles.SeectionB}>
             <FlatList
-              data={listHorizontal.slice(0, 4)}
+              data={listHorizontal}
               horizontal={true}
+              showsHorizontalScrollIndicator={true}
               keyExtractor={(item, index) => item.id}
               renderItem={({ item }) => (
-                <View style={styles.tile}>
+                <TouchableOpacity onPress={()=>{
+                    Alert.alert(`Item pressed ${item.val}`)
+                }} style={styles.tile}>
                   <Text style={styles.text2}>{item.val}</Text>
                   <Image source={Images.TreeIcon} style={styles.tileImage} />
-                </View>
+                </TouchableOpacity>
               )}
             />
           </View>
