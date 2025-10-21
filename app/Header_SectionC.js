@@ -11,7 +11,7 @@ const Header_SectionC = () => {
   return (
      <View style={styles.SectionC}>
             <FlatList
-              data={listVertical.slice(0, 4)}
+              data={listVertical.slice(0, 5)}
               keyExtractor={(item, index) => item.id}
               renderItem={({ item }) => (
                 <View style={styles.tile2}>
