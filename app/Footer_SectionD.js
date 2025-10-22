@@ -3,7 +3,7 @@ import { Dimensions, StyleSheet, Text, View } from 'react-native';
 
 const { height } = Dimensions.get("window");
 
-const Header_SectionD = () => {
+const Footer_SectionD = () => {
     
   return (
      <View style={styles.SectionD}>
@@ -20,7 +20,7 @@ const Header_SectionD = () => {
   )
 }
 
-export default Header_SectionD
+export default Footer_SectionD
 
 const styles = StyleSheet.create({
    SectionD: {

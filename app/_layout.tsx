@@ -2,10 +2,10 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Body_SectionB from "./Body_SectionB";
+import Body_SectionC from "./Body_SectionC";
+import Footer_SectionD from "./Footer_SectionD";
 import Header_SectionA from "./Header_SectionA";
-import Header_SectionB from "./Header_SectionB";
-import Header_SectionC from "./Header_SectionC";
-import Header_SectionD from "./Header_SectionD";
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -17,9 +17,9 @@ export default function RootLayout() {
   return (
     <SafeAreaView>
       <Header_SectionA />
-      <Header_SectionB />
-      <Header_SectionC />
-            <Header_SectionD/>
+      <Body_SectionB />
+      <Body_SectionC />
+      <Footer_SectionD />
     </SafeAreaView>
 
   );

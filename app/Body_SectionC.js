@@ -1,18 +1,20 @@
+import { Images } from '@/assets/NewImages/Index';
 import CustomModal from '@/components/CustomModal';
 import { useState } from 'react';
-import { Alert, Dimensions, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Button, Dimensions, FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { DummyName } from "../constants/DummyData";
 
 
 const { height } = Dimensions.get("window");
 
-const Header_SectionC = () => {
+const Body_SectionC = () => {
     const [listVertical, setListVertical] = useState(DummyName)
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [updatedValue, setUpdatedValue] = useState("");
     const [updatedAge, setUpdatedAge] = useState("");
     const [updatedGen, setUpdatedGen] = useState("");
+    const [updatePress, setUpdatePress] = useState(false);
 
     const handleLongPress = (item) => {
         setSelectedItem(item);
@@ -20,6 +22,15 @@ const Header_SectionC = () => {
         setUpdatedAge(item.age)
         setUpdatedGen(item.gen)
         setModalVisible(true);
+                setUpdatePress(false)
+
+    };
+    const handlePress = () => {
+        setModalVisible(true);
+        setUpdatePress(true)
+        setUpdatedValue("")
+        setUpdatedAge("")
+        setUpdatedGen("")
     };
 
     const handleUpdate = () => {
@@ -28,14 +39,42 @@ const Header_SectionC = () => {
             return;
         }
         const updatedList = listVertical.map((item) =>
-            item.id === selectedItem.id ? { ...item, val: updatedValue,age:updatedAge,gen:updatedGen } : item
+            item.id === selectedItem.id ? { ...item, val: updatedValue, age: updatedAge, gen: updatedGen } : item
         );
+        setListVertical(updatedList);
+        setModalVisible(false);
+    };
+    const handleAdd = () => {
+        if (!updatedValue || !updatedAge || !updatedGen) {
+            Alert.alert("Validation", "All fields are required!");
+            return;
+        }
+
+        const newItem = {
+            id: Date.now().toString(), 
+            val: updatedValue,
+            age: updatedAge,
+            gen: updatedGen,
+        };
+
+        setListVertical([newItem,...listVertical]);
+        setModalVisible(false);
+    };
+
+
+    const handleDelete = () => {
+
+        const updatedList = listVertical.filter((item) => item.id !== selectedItem.id)
         setListVertical(updatedList);
         setModalVisible(false);
     };
 
     return (
         <View style={styles.SectionC}>
+            <TouchableOpacity onPress={handlePress} style={[styles.tile2, { alignItems: "center" }]}>
+                <Text style={styles.text2}>New Person Entry</Text>
+                <Image source={Images.AddIcon} style={styles.tileImage} />
+            </TouchableOpacity>
             <FlatList
                 data={listVertical}
                 showsVerticalScrollIndicator={true}
@@ -45,8 +84,8 @@ const Header_SectionC = () => {
                         Alert.alert(`Item Pressed ${item.val}`)
                     }}
                         style={styles.tile2}
-                        onLongPress={()=>handleLongPress(item)}
-                        >
+                        onLongPress={() => handleLongPress(item)}
+                    >
                         <Text style={styles.text2}>{item.val}</Text>
                         <Text style={styles.text2}>{item.age}</Text>
                         <Text style={styles.text2}>{item.gen}</Text>
@@ -55,53 +94,53 @@ const Header_SectionC = () => {
                 )}
             />
             <CustomModal visible={modalVisible} onClose={() => setModalVisible(false)}>
-                <Text style={styles.modalTitle}>Edit Value</Text>
-
+                <Text style={{ textAlign: "center" }}>{updatePress ? "Enter Name" : "Edit Name"}</Text>
                 <TextInput
                     style={styles.input}
                     value={updatedValue}
                     onChangeText={setUpdatedValue}
                     placeholder="Enter new value"
                 />
-                 <TextInput
+                <Text style={{ textAlign: "center" }}>{updatePress ? "Enter Age" : "Edit Age"}</Text>
+                <TextInput
                     style={styles.input}
                     value={updatedAge}
                     onChangeText={setUpdatedAge}
                     placeholder="Enter new Age"
                 />
-                 <TextInput
+                <Text style={{ textAlign: "center" }}>{updatePress ? "Enter gen" : "Edit gen"}</Text>
+                <TextInput
                     style={styles.input}
                     value={updatedGen}
                     onChangeText={setUpdatedGen}
                     placeholder="Enter new Gen"
                 />
 
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity
-                        style={styles.cancelBtn}
-                        onPress={() => setModalVisible(false)}
-                    >
-                        <Text style={styles.cancelText}>Cancel</Text>
-                    </TouchableOpacity>
+                <View style={[updatePress?styles.buttonContainer:styles.buttonContainerAdd]}>
+                    {updatePress ?
+                        <Button title='Create' color={"#007AFF"} onPress={handleAdd} />
+                        :
+                        <View style={styles.buttonContainerAdd}>
 
-                    <TouchableOpacity style={styles.confirmBtn} onPress={handleUpdate}>
-                        <Text style={styles.confirmText}>Update</Text>
-                    </TouchableOpacity>
+                            <Button title='Update' color={"#007AFF"} onPress={handleUpdate} />
+                            <Button title='Delete' color={"red"} onPress={handleDelete} />
+                        </View>
+                    }
+
                 </View>
             </CustomModal>
         </View>
     )
 }
 
-export default Header_SectionC
+export default Body_SectionC
 
 const styles = StyleSheet.create({
     SectionC: {
         height: (height * 7) / 14,
         backgroundColor: "#FFB6C1",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignSelf: "center"
+        alignSelf: "center",
+        width: "100%"
     },
     tile: {
         backgroundColor: "#87CEEB",
@@ -143,14 +182,22 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         flexDirection: "row",
-        justifyContent: "center",
+        justifyContent: "space-between",
+        width: "50%",
+        alignSelf: "center"
+    },
+      buttonContainerAdd: {
+        flexDirection:"row",
+        justifyContent:"space-between",
+        width:"90%",
+        alignSelf:"center"
     },
     cancelBtn: {
         paddingVertical: 10,
         paddingHorizontal: 15,
     },
     confirmBtn: {
-        backgroundColor: "#007AFF",
+        backgroundColor: "red",
         borderRadius: 8,
         paddingVertical: 10,
         paddingHorizontal: 15,
@@ -164,5 +211,10 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontSize: 15,
         fontWeight: "600",
+    },
+    tileImage: {
+        width: 40,
+        height: 40,
+        resizeMode: "contain",
     },
 })
